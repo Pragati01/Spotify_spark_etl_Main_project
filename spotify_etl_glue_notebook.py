@@ -7,12 +7,12 @@ from awsglue.job import Job
 from pyspark.sql import functions as F
 
 # 1️⃣ Initialize Glue job
-args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+args = getResolvedOptions(sys.argv, ['Spotify_ETL'])
 sc = SparkContext()
 glueContext = GlueContext(sc)
 spark = glueContext.spark_session
 job = Job(glueContext)
-job.init(args['JOB_NAME'], args)
+job.init(args['Spotify_ETL'], args)
 
 # 2️⃣ Read data from S3 (or from Glue Catalog)
 input_path = "s3://my-bucket/raw/customer_events/"
