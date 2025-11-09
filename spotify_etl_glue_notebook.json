@@ -1,229 +1,37 @@
-{
-	"jobConfig": {
-		"name": "spotify-spark_notebook",
-		"description": "",
-		"role": "arn:aws:iam::390844776536:role/spotify-glue-iam-role",
-		"command": "glueetl",
-		"version": "5.0",
-		"runtime": null,
-		"workerType": "G.1X",
-		"numberOfWorkers": "5",
-		"maxCapacity": 5,
-		"jobRunQueuingEnabled": false,
-		"maxRetries": 0,
-		"timeout": 480,
-		"maxConcurrentRuns": 1,
-		"security": "none",
-		"scriptName": "spotify-spark_notebook.py",
-		"scriptLocation": "s3://aws-glue-assets-390844776536-us-east-1/scripts/",
-		"language": "python-3",
-		"spark": false,
-		"jobParameters": [],
-		"tags": [],
-		"jobMode": "NOTEBOOK_MODE",
-		"createdOn": "2025-03-04T13:53:01.516Z",
-		"developerMode": false,
-		"connectionsList": [],
-		"temporaryDirectory": "s3://aws-glue-assets-390844776536-us-east-1/temporary/",
-		"glueHiveMetastore": true,
-		"etlAutoTuning": false,
-		"pythonShellPrebuiltLibraryOption": "analytics",
-		"flexExecution": false,
-		"minFlexWorkers": null,
-		"maintenanceWindow": null,
-		"bookmark": "",
-		"metrics": "",
-		"observabilityMetrics": "",
-		"logging": "",
-		"sparkPath": "",
-		"serverEncryption": false,
-		"pythonPath": "",
-		"dependentPath": "",
-		"referencedPath": "",
-		"etlAutoScaling": false,
-		"etlAutoTuningJobRules": "",
-		"pythonVersion": ""
-	},
-	"hasBeenSaved": false,
-	"usageProfileName": null,
-	"script": "\nimport sys\nfrom awsglue.transforms import *\nfrom awsglue.utils import getResolvedOptions\nfrom pyspark.context import SparkContext\nfrom awsglue.context import GlueContext\nfrom awsglue.job import Job\n  \nsc = SparkContext.getOrCreate()\nglueContext = GlueContext(sc)\nspark = glueContext.spark_session\njob = Job(glueContext)\ndyf = glueContext.create_dynamic_frame.from_catalog(database='database_name', table_name='table_name')\ndyf.printSchema()\ndf = dyf.toDF()\ndf.show()\nimport matplotlib.pyplot as plt\n\n# Set X-axis and Y-axis values\nx = [5, 2, 8, 4, 9]\ny = [10, 4, 8, 5, 2]\n  \n# Create a bar chart \nplt.bar(x, y)\n  \n# Show the plot\ns3output = glueContext.getSink(\n  path=\"s3://bucket_name/folder_name\",\n  connection_type=\"s3\",\n  updateBehavior=\"UPDATE_IN_DATABASE\",\n  partitionKeys=[],\n  compression=\"snappy\",\n  enableUpdateCatalog=True,\n  transformation_ctx=\"s3output\",\n)\ns3output.setCatalogInfo(\n  catalogDatabase=\"demo\", catalogTableName=\"populations\"\n)\ns3output.setFormat(\"glueparquet\")\ns3output.writeFrame(DyF)\njob.commit()",
-	"notebook": {
-		"cells": [
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"# AWS Glue Studio Notebook\n",
-					"##### You are now running a AWS Glue Studio notebook; To start using your notebook you need to start an AWS Glue Interactive Session.\n"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"#### Optional: Run this cell to see available notebook commands (\"magics\").\n"
-				]
-			},
-			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"%help"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"####  Run this cell to set up and start your interactive session.\n"
-				]
-			},
-			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"%idle_timeout 2880\n%glue_version 5.0\n%worker_type G.1X\n%number_of_workers 5\n\nimport sys\nfrom awsglue.transforms import *\nfrom awsglue.utils import getResolvedOptions\nfrom pyspark.context import SparkContext\nfrom awsglue.context import GlueContext\nfrom awsglue.job import Job\n  \nsc = SparkContext.getOrCreate()\nglueContext = GlueContext(sc)\nspark = glueContext.spark_session\njob = Job(glueContext)"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"#### Example: Create a DynamicFrame from a table in the AWS Glue Data Catalog and display its schema\n"
-				]
-			},
-			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"dyf = glueContext.create_dynamic_frame.from_catalog(database='database_name', table_name='table_name')\ndyf.printSchema()"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"#### Example: Convert the DynamicFrame to a Spark DataFrame and display a sample of the data\n"
-				]
-			},
-			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"df = dyf.toDF()\ndf.show()"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"#### Example: Visualize data with matplotlib\n"
-				]
-			},
-			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"import matplotlib.pyplot as plt\n\n# Set X-axis and Y-axis values\nx = [5, 2, 8, 4, 9]\ny = [10, 4, 8, 5, 2]\n  \n# Create a bar chart \nplt.bar(x, y)\n  \n# Show the plot\n%matplot plt"
-				]
-			},
-			{
-				"cell_type": "markdown",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"#### Example: Write the data in the DynamicFrame to a location in Amazon S3 and a table for it in the AWS Glue Data Catalog\n"
-				]
-			},
-			{
-				"cell_type": "code",
-				"execution_count": null,
-				"metadata": {
-					"trusted": true,
-					"editable": true
-				},
-				"outputs": [],
-				"source": [
-					"s3output = glueContext.getSink(\n  path=\"s3://bucket_name/folder_name\",\n  connection_type=\"s3\",\n  updateBehavior=\"UPDATE_IN_DATABASE\",\n  partitionKeys=[],\n  compression=\"snappy\",\n  enableUpdateCatalog=True,\n  transformation_ctx=\"s3output\",\n)\ns3output.setCatalogInfo(\n  catalogDatabase=\"demo\", catalogTableName=\"populations\"\n)\ns3output.setFormat(\"glueparquet\")\ns3output.writeFrame(DyF)"
-				]
-			}
-		],
-		"metadata": {
-			"kernelspec": {
-				"display_name": "Glue Interactive Sessions",
-				"language": "python"
-			},
-			"language_info": {
-				"codemirror_mode": {
-					"name": "python",
-					"version": 3
-				},
-				"file_extension": ".py",
-				"mimetype": "text/x-python",
-				"name": "glue_pyspark"
-			},
-			"orig_nbformat": 4
-		},
-		"nbformat": 4,
-		"nbformat_minor": 4
-	}
-}
+import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+from pyspark.sql import functions as F
+
+# 1️⃣ Initialize Glue job
+args = getResolvedOptions(sys.argv, ['JOB_NAME'])
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+# 2️⃣ Read data from S3 (or from Glue Catalog)
+input_path = "s3://my-bucket/raw/customer_events/"
+df = spark.read.json(input_path)
+
+# 3️⃣ Transform data
+df_cleaned = (
+    df.filter(df.user_id.isNotNull())
+      .withColumn("event_date", F.to_date("timestamp"))
+)
+
+df_summary = (
+    df_cleaned.groupBy("user_id", "event_date")
+              .agg(F.count("*").alias("event_count"))
+)
+
+# 4️⃣ Write back to S3 in Parquet format
+output_path = "s3://my-bucket/processed/customer_events_summary/"
+df_summary.write.mode("overwrite").parquet(output_path)
+
+# 5️⃣ Commit job so Glue knows it finished successfully
+job.commit()
